@@ -163,9 +163,9 @@ class SoundPicker {
 
 
     this.processAudioBuffer = function (time, arr) {
-      let pitch = this.autoCorrelate(arr, this.audioContext.sampleRate);
-      if (pitch.pitch > -1) {
-        this.onProcessSample(time - this.recordingTime, pitch);
+      let pitchInfo = this.autoCorrelate(arr, this.audioContext.sampleRate);
+      if (pitchInfo.pitch > -1) {
+        this.onProcessSample(time - this.recordingTime, pitchInfo);
       }
     };
 
