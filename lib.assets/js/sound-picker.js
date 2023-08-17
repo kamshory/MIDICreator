@@ -47,7 +47,7 @@ class SoundPicker {
     this.minRms = 0.002;
 
     // events
-    this.onProcessSample = function (time, pitch) {
+    this.onProcessSample = function (currentTime, pitcInfo) {
     };
 
     this.onStartRecording = function (sampleRate) {
