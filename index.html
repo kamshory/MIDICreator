@@ -34,7 +34,6 @@
     <script>
         let audioPicker;
         let midiCreator;
-
         let tempo = 60;
         let maxTempo = 720;
         let resolution = 8;
@@ -43,10 +42,6 @@
         window.onload = function()
         {
             audioPicker = new SoundPicker();
-
-            
-
-
             audioPicker.onStartRecording = function(sampleRate)
             {
                 console.log('start recording')
@@ -58,9 +53,9 @@
                 let midiData = midiCreator.createMidi();
                 window.open('data:audio/midi;base64,'+midiData);
             }
-            audioPicker.onProcessSample = function(time, pitch)
+            audioPicker.onProcessSample = function(time, pitcInfo)
             {
-                midiCreator.addNote(pitch.pitch, pitch.velocity, time);
+                midiCreator.addNote(pitcInfo.pitch, pitcInfo.velocity, time);
             }
         }
     </script>
