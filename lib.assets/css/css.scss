@@ -1,0 +1,154 @@
+$blue-light: #49F1D5;
+$blue: #2E748F;
+$blue-dark: #153A49;
+
+$red: #ED6A5F;
+
+$white: #ffffff;
+$black: #000000;
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(180deg, $blue, $blue-dark);
+
+    font-size: 10px;
+}
+
+.recorder {}
+
+.waveform {
+    position: relative;
+
+    padding: 4rem 0;
+
+    &__canvas {
+        width: 100%;
+        height: 12.8rem;
+    }
+}
+
+.toolbar {
+    text-align: center;
+}
+
+.button {
+    transition: background .4s ease-in-out, color .4s ease-in-out;
+
+    position: relative;
+
+    display: inline-block;
+
+    width: 8rem;
+    height: 8rem;
+    margin: 0 1rem;
+    padding: 0;
+
+    background: $white;
+
+    border-radius: 50%;
+    border: none;
+    outline: none;
+
+    color: rgba($black, .5);
+    font-size: 4rem;
+
+    cursor: pointer;
+
+    &--record {
+        &::before {
+            animation: spin 4s linear infinite;
+            transition: opacity .4s ease-in-out;
+
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 8rem;
+            height: 8rem;
+            margin: -.4rem;
+            padding: -.4rem;
+
+            background: transparent;
+            opacity: 0;
+
+            border-radius: 50%;
+            border: .4rem solid rgba($blue, .8);
+            border-top-color: rgba($blue, 0);
+        }
+
+        &.button--active {
+            background: $red;
+
+            color: $white;
+
+            &::before {
+                opacity: 1;
+            }
+        }
+    }
+
+    &--play {
+        width: 5rem;
+        height: 5rem;
+
+        font-size: 2rem;
+
+        vertical-align: inherit;
+
+        &.button--active {
+            background: $blue-light;
+
+            color: $white;
+        }
+    }
+
+    &--disabled {
+        opacity: .2;
+
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+}
+
+.audio {
+    width: 0;
+    height: 0;
+
+    opacity: 0;
+    visibility: 0;
+}
+
+.message {
+    transtion: opacity .4s ease-in-out;
+    padding: 1rem 2rem;
+
+    background: $red;
+    opacity: 0;
+
+    font-size: 1.6rem;
+    font-family: Helvetica, Arial, sans-serif;
+    color: $white;
+    line-height: 1.5;
+
+    &--visible {
+        opacity: 1;
+    }
+}

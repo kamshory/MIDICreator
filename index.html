@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Creator</title>
+    <link rel="stylesheet" href="lib.assets/css/css.css">
+    
+</head>
+<body>
+
+    <div class="all">
+        <div class="container">
+            <div class="sound-recorder">
+                <div class="js-message message"></div>
+                <div class="recorder">
+                <div class="waveform">
+                    <canvas class="js-canvas waveform__canvas"></canvas>
+                </div>
+                <div class="toolbar">
+                    <button class="js-record button button--record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+                    <button class="js-play button button--play button--disabled"><i class="fa fa-play" aria-hidden="true"></i></button>
+                    <audio class="js-audio audio audio--hidden" controls/>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="lib.assets/js/js.js"></script>
+    <script>
+        let audioPicker;
+        window.onload = function()
+        {
+            audioPicker = new SoundPicker();
+        }
+    </script>
+</body>
+</html>
