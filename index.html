@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIDI Creator</title>
     <link rel="stylesheet" href="lib.assets/css/css.css">
+    <link rel="stylesheet" href="lib.assets/css/fontawesome-free-6.4.2/css/all.min.css">
     
 </head>
 <body>
@@ -26,12 +27,41 @@
             </div>
         </div>
     </div>
-    <script src="lib.assets/js/js.js"></script>
+    <script src="lib.assets/js/jzz/JZZ.js"></script>
+    <script src="lib.assets/js/jzz/JZZ.midi.SMF.js"></script>
+    <script src="lib.assets/js/sound-picker.js"></script>
+    <script src="lib.assets/js/midi-creator.js"></script>
     <script>
         let audioPicker;
+        let midiCreator;
+
+        let tempo = 60;
+        let maxTempo = 720;
+        let resolution = 8;
+        let channel = 3;
+
         window.onload = function()
         {
             audioPicker = new SoundPicker();
+
+            
+
+
+            audioPicker.onStartRecording = function(sampleRate)
+            {
+                console.log('start recording')
+                midiCreator = new MidiCreator({tempo:tempo, maxTempo:maxTempo, resolution:resolution, sampleRate:sampleRate, channel:channel});
+            }
+            audioPicker.onStopRecording = function(duration)
+            {
+                console.log('stop recording ', duration)
+                let midiData = midiCreator.createMidi();
+                window.open('data:audio/midi;base64,'+midiData);
+            }
+            audioPicker.onProcessSample = function(time, pitch)
+            {
+                midiCreator.addNote(pitch.pitch, pitch.velocity, time);
+            }
         }
     </script>
 </body>
