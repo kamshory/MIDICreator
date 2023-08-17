@@ -60,6 +60,11 @@ class MidiCreator {
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
     this.minInterval = 60000 / (this.tempo * this.resolution);
 
+    this.onPreviewNote = function(data)
+    {
+
+    }
+
     /**
      * Get note from pitch
      * @param {number} frequency
@@ -116,21 +121,20 @@ class MidiCreator {
       this.lastNote = null;
     };
 
-    this.addNote = function (pitch, velocity, currentTime) {
-      if (pitch < this.pitchMin || pitch > this.pitchMax) {
+    this.addNote = function (pitch, velocity, currentTime, force) {
+      if (!force && (pitch < this.pitchMin || pitch > this.pitchMax)) {
         return;
       }
       currentTime = currentTime || this.now();
-      if(currentTime - this.lastTime < this.minInterval)
-      {
+      if (!force && (currentTime - this.lastTime < this.minInterval)) {
         return;
       }
-    
+
       this.lastTime = currentTime;
 
       let note = this.noteFromPitch(pitch);
 
-      velocity = 30 + 200 * velocity;
+      velocity = 40 + 200 * velocity;
       if (velocity > 127) {
         velocity = 127;
       }
@@ -155,6 +159,7 @@ class MidiCreator {
           let start = this.midiData[this.midiData.length - 1].time;
           this.midiData[this.midiData.length - 1].duration =
             currentTime - start;
+          this.midiData[this.midiData.length - 1].close = true;
         }
         if (note != this.lastNote) {
           // new note on
@@ -165,8 +170,10 @@ class MidiCreator {
             velocity: Math.round(velocity),
             time: currentTime,
             duration: 0.1,
+            close: false,
           };
           this.midiData.push(newData);
+          this.onPreviewNote(newData)
         }
       }
 
@@ -197,6 +204,12 @@ class MidiCreator {
 
       let time1 = 0;
       let time2 = 0;
+
+      if (this.midiData[this.midiData.length - 1].close) {
+        this.midiData[this.midiData.length - 1].duration =
+          this.now() - this.midiData[this.midiData.length - 1].start;
+      }
+
       for (let i in this.midiData) {
         time1 = this.midiTime(this.midiData[i].time);
 
@@ -211,13 +224,16 @@ class MidiCreator {
         );
 
         // send event note Off at time1
-        time2 = this.midiTime(
-          this.midiData[i].time + this.midiData[i].duration
-        );
-        track1.add(
-          time2,
-          JZZ.MIDI.noteOff(this.channel, this.midiData[i].name)
-        );
+        console.log(this.midiData[i].time, this.midiData[i].duration)
+        time2 = this.midiTime(this.midiData[i].time + this.midiData[i].duration);
+        if (!isNaN(time2)) {
+          let note = JZZ.MIDI.noteOff(this.channel, this.midiData[i].name);
+          track1.add(time2, note);
+        }
+        else
+        {
+          time2 = time1;
+        }
       }
 
       track1.add(time2, JZZ.MIDI.smfEndOfTrack());
