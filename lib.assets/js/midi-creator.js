@@ -196,7 +196,7 @@ class MidiCreator {
     /**
      * Create MIDI
      */
-    this.createMidi = function () {
+    this.createMidi = function (raw) {
       let smf = new JZZ.MIDI.SMF(0, this.ppqn);
       let track1 = new JZZ.MIDI.SMF.MTrk();
 
@@ -240,6 +240,10 @@ class MidiCreator {
       smf.push(track1);
 
       let str = smf.dump(); // MIDI file dumped as a string
+      if(raw)
+      {
+        return str;
+      }
       return JZZ.lib.toBase64(str); // convert to base-64 string
     };
 

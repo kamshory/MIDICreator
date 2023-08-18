@@ -88,15 +88,16 @@ function uploadFile(file) {
     let mc = new MidiCreator({
         tempo: tempo,
         maxTempo: maxTempo,
-        resolution: 16,
+        resolution: 32,
         channel: channel,
         sampleRate: 32000,
     });
 
     mc.loadLocalAudioFile(file, function(float32Array){
         mc.soundToNote();
-        let midiData = mc.createMidi();
+        let midiData = mc.createMidi(false);
         window.open('data:audio/midi;base64,'+midiData);
+
     });
     
 }

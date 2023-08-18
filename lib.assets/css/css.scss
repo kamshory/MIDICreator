@@ -152,3 +152,30 @@ html {
         opacity: 1;
     }
 }
+
+.piano-roll{
+    width: 1540px;
+    margin: 20px auto 0 auto;
+    position: relative;
+}
+.tuts-white{
+    background-color: #FFFFFF;
+    border-right: 1px solid #DDDDDD;
+    box-sizing: border-box;
+    position: absolute;
+    height: 100px;
+}
+.tuts-white.note-on{
+    background-color: rgb(43, 255, 0);
+}
+.tuts-black{
+    background-color: #111111;
+    border-right: 1px solid #DDDDDD;
+    box-sizing: border-box;
+    position: absolute;
+    height: 50px;
+}
+.tuts-black.note-on{
+    background-color: red;
+}
+
