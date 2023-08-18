@@ -84,6 +84,31 @@ function handleDrop(e) {
 function handleFiles(files) {
   [...files].forEach(processLocalFile);
 }
+let init = false;
+let player;
+function initPlayer()
+{
+  if(!init)
+  {
+    JZZ.synth.Tiny.register('Web Audio'); 
+    player = new JZZ.gui.Player('player');
+  }
+  init = true;
+}
+
+function play(data)
+{
+  initPlayer();
+  player.load(new JZZ.MIDI.SMF(data));
+  if(playing)
+  {
+    player.stop();
+  }
+  player.play();
+  playing = true;
+}
+
+let playing = false;
 
 function processLocalFile(file) {
     let mc = new MidiCreator({
@@ -95,12 +120,9 @@ function processLocalFile(file) {
     });
 
     mc.loadLocalAudioFile(file, function(float32Array){
-      mc.soundToNote();     
-      JZZ.synth.Tiny.register('Web Audio');     
-      var player = new JZZ.gui.Player('player');
+      mc.soundToNote();          
       var data = mc.createMidi(true);
-      player.load(new JZZ.MIDI.SMF(data));
-      player.play();   
+      play(data);
       let midiData = JZZ.lib.toBase64(data);
       window.open('data:audio/midi;base64,'+midiData);
     });
@@ -118,11 +140,8 @@ function processRemoteFile(path)
     
     mc.loadRemoteAudioFile(path, function(float32Array){
       mc.soundToNote();     
-      JZZ.synth.Tiny.register('Web Audio');     
-      var player = new JZZ.gui.Player('player');
       var data = mc.createMidi(true);
-      player.load(new JZZ.MIDI.SMF(data));
-      player.play();   
+      play(data);
       let midiData = JZZ.lib.toBase64(data);
       window.open('data:audio/midi;base64,'+midiData);
     });
