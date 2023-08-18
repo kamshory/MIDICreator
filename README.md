@@ -19,58 +19,91 @@ let mc = new MidiCreator(options);
 **properties**
 
 1. name: `tempo`
+
 type: `number`
+
 default value: `130`
+
 description: Tempo or beat per minute
 
 2. name: `ppqn`
+
 type: `number`
+
 default value: `96`
+
 description: Pulses per quarter note
 
 3. name: `maxTempo`
+
 type: `number`
+
 default value: `720`
+
 description: Maximum tempo (for realtime converting only)
 
 4. name: `channel`
+
 type: `number`
+
 default value: `0`
+
 description: Channel number to used
 
 5. name: `pitchMin`
+
 type: `number`
+
 default value: `20`
+
 description: Minimum frequency to be process
 
 6. name: `pitchMax`
+
 type: `number`
+
 default value: `20000`
+
 description: Maximum frequency to be process
 
 7. name: `thresholdRms`
+
 type: `number`
+
 default value: `0.01`
+
 description: Threshold RMS
 
 8. name: `thresholdAmplitude`
+
 type: `number`
+
 default value: `0.2`
+
 description: Threshold amplitude
 
 9. name: `resolution`
+
 type: `number`
+
 default value: `32`
+
 description: Resolution (note per quarter note or note per bar)
 
 10. name: `sampleRate`
+
 type: `number`
+
 default value: `32000`
+
 description: Sample rate (sample per second)
 
 11. name: `minSample`
+
 type: `number`
+
 default value: `500`
+
 description: Minimum sampe fo analize frequancy and amplitude
 
 
