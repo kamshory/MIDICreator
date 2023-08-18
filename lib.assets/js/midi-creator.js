@@ -336,6 +336,11 @@ class MidiCreator {
       return t0;
     };
 
+    /**
+     * Load data from remote file
+     * @param {string} path Remote path
+     * @param {function} callback Callback function triggered when audio data has been decoded
+     */
     this.loadRemoteAudioFile = function (path, callback) {
       let audioContext = new AudioContext({
         sampleRate: this.sampleRate,
@@ -364,7 +369,11 @@ class MidiCreator {
       ajaxRequest.send();
     };
 
-
+    /**
+     * Load data from local file
+     * @param {File} file local file
+     * @param {function} callback Callback function triggered when audio data has been decoded
+     */
     this.loadLocalAudioFile = function(file, callback)
     {
       let audioContext = new AudioContext({
@@ -402,17 +411,15 @@ class MidiCreator {
       let cSize = this.chunkSize();
       let start = 0;
       let end = 0;
+      let offset = {};
       do {
-        end = start + cSize;
-        if (end > max) {
-          end = max;
-        }
-        let end2 = end;
-        if(end2 - start > this.minSample)
-        {
-          end2 = start + this.minSample;
-        }
-        let buf = this.waveformArray.slice(start, end2);
+        // get real end of data
+        end = this.getEnd(start, end, max, cSize);
+
+        // not all data will be processed
+        offset = this.getOffset(start, end);
+        
+        let buf = this.waveformArray.slice(offset.start, offset.end);
 
         let ac = this.autoCorrelate(buf, this.sampleRate);
 
@@ -426,6 +433,25 @@ class MidiCreator {
 
       return this;
     };
+    
+    this.getEnd = function(start, end, max, cSize)
+    {
+      end = start + cSize;
+      if (end > max) {
+        end = max;
+      }
+      return end;
+    }
+    
+    this.getOffset = function(start, end)
+    {
+      let end2 = end;
+      if(end2 - start > this.minSample)
+      {
+        end2 = start + this.minSample;
+      }
+      return {start:start, end:end2};
+    }
 
     let _this = this;
   }

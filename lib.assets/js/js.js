@@ -2,8 +2,9 @@ let audioPicker;
 let midiCreator;
 let tempo = 80;
 let maxTempo = 720;
-let resolution = 16;
+let resolution = 32;
 let channel = 3;
+let sampleRate = 32000;
 
 window.onload = function () {
   let elem = document.querySelector(".piano-roll");
@@ -88,9 +89,9 @@ function processLocalFile(file) {
     let mc = new MidiCreator({
         tempo: tempo,
         maxTempo: maxTempo,
-        resolution: 32,
+        resolution: resolution,
         channel: channel,
-        sampleRate: 32000,
+        sampleRate: sampleRate,
     });
 
     mc.loadLocalAudioFile(file, function(float32Array){
@@ -102,10 +103,17 @@ function processLocalFile(file) {
 
 function processRemoteFile(path)
 {
-    let midiCreator = new MidiCreator({tempo:75, maxTempo:720, resolution:32, sampleRate:32000, channel:3});
-    midiCreator.loadRemoteAudioFile(path, function(float32Array){
-        midiCreator.soundToNote();
-        let midiData = midiCreator.createMidi();
+    let mc = new MidiCreator({
+      tempo: tempo,
+      maxTempo: maxTempo,
+      resolution: resolution,
+      channel: channel,
+      sampleRate: sampleRate,
+    });
+    
+    mc.loadRemoteAudioFile(path, function(float32Array){
+        mc.soundToNote();
+        let midiData = mc.createMidi(false);
         window.open('data:audio/midi;base64,'+midiData);
     });
 }
