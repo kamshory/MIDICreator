@@ -49,7 +49,12 @@ class MidiCreator {
      * Sample rate
      */
     this.sampleRate = conf.sampleRate || 32000;
-    
+
+    /**
+     * Minimum sampe fo analize frequancy and amplitude
+     */
+    this.minSample = this.minSample || 500;
+
 
     this.barDuration = 60 / (this.tempo * this.ppqn);
     this.timeOffset = 0;
@@ -61,7 +66,6 @@ class MidiCreator {
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
     this.minInterval = 60000 / (this.tempo * this.resolution);
     
-    this.minSample = this.minSample || 500;
 
     this.onPreviewNote = function(data)
     {
