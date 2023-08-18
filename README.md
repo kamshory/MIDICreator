@@ -80,7 +80,8 @@ description: Minimum sampe fo analize frequancy and amplitude
  * 
  * @param {File} file Selected file from emelemnt <input type="file">
  */ 
-function processLocalFile(file) {
+function processLocalFile(file) 
+{
     let mc = new MidiCreator({tempo:75, maxTempo:720, resolution:32, sampleRate:32000, channel:3});
     mc.loadLocalAudioFile(file, function(float32Array){
         mc.soundToNote();
