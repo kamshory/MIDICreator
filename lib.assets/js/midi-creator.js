@@ -49,6 +49,7 @@ class MidiCreator {
      * Sample rate
      */
     this.sampleRate = conf.sampleRate || 32000;
+    
 
     this.barDuration = 60 / (this.tempo * this.ppqn);
     this.timeOffset = 0;
@@ -59,6 +60,8 @@ class MidiCreator {
     this.noteFlats = "C Db D Eb E F Gb G Ab A Bb B".split(" ");
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
     this.minInterval = 60000 / (this.tempo * this.resolution);
+    
+    this.minSample = this.minSample || 500;
 
     this.onPreviewNote = function(data)
     {
@@ -400,7 +403,12 @@ class MidiCreator {
         if (end > max) {
           end = max;
         }
-        let buf = this.waveformArray.slice(start, end);
+        let end2 = end;
+        if(end2 - start > this.minSample)
+        {
+          end2 = start + this.minSample;
+        }
+        let buf = this.waveformArray.slice(start, end2);
 
         let ac = this.autoCorrelate(buf, this.sampleRate);
 
