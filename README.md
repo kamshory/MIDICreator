@@ -18,92 +18,59 @@ let mc = new MidiCreator(options);
 
 **properties**
 
-1. name: `tempo`
-
-type: `number`
-
-default value: `130`
-
+1. name: `tempo` <br />
+type: `number` <br />
+default value: `130` <br />
 description: Tempo or beat per minute
 
-2. name: `ppqn`
-
-type: `number`
-
-default value: `96`
-
+2. name: `ppqn` <br />
+type: `number` <br />
+default value: `96` <br />
 description: Pulses per quarter note
 
-3. name: `maxTempo`
-
-type: `number`
-
-default value: `720`
-
+3. name: `maxTempo` <br />
+type: `number` <br />
+default value: `720` <br />
 description: Maximum tempo (for realtime converting only)
 
-4. name: `channel`
-
-type: `number`
-
-default value: `0`
-
+4. name: `channel` <br />
+type: `number` <br />
+default value: `0` <br />
 description: Channel number to used
 
-5. name: `pitchMin`
-
-type: `number`
-
-default value: `20`
-
+5. name: `pitchMin` <br />
+type: `number` <br />
+default value: `20` <br />
 description: Minimum frequency to be process
 
-6. name: `pitchMax`
-
-type: `number`
-
-default value: `20000`
-
+6. name: `pitchMax` <br />
+type: `number` <br />
+default value: `20000` <br />
 description: Maximum frequency to be process
 
-7. name: `thresholdRms`
-
-type: `number`
-
-default value: `0.01`
-
+7. name: `thresholdRms` <br />
+type: `number` <br />
+default value: `0.01` <br />
 description: Threshold RMS
 
-8. name: `thresholdAmplitude`
-
-type: `number`
-
-default value: `0.2`
-
+8. name: `thresholdAmplitude` <br />
+type: `number` <br />
+default value: `0.2` <br />
 description: Threshold amplitude
 
-9. name: `resolution`
-
-type: `number`
-
-default value: `32`
-
+9. name: `resolution` <br />
+type: `number` <br />
+default value: `32` <br />
 description: Resolution (note per quarter note or note per bar)
 
-10. name: `sampleRate`
-
-type: `number`
-
-default value: `32000`
-
+10. name: `sampleRate` <br />
+type: `number` <br />
+default value: `32000` <br />
 description: Sample rate (sample per second)
 
-11. name: `minSample`
-
-type: `number`
-
-default value: `500`
-
+11. name: `minSample` <br />
+type: `number` <br />
+default value: `500` <br />
 description: Minimum sampe fo analize frequancy and amplitude
 
 
