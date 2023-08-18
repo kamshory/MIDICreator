@@ -117,7 +117,7 @@ html {
 }
 
 .tuts-white.note-on {
-  background-color: rgb(43, 255, 0);
+  background-color: rgb(188, 253, 37);
 }
 
 .tuts-black {
@@ -129,7 +129,7 @@ html {
 }
 
 .tuts-black.note-on {
-  background-color: red;
+  background-color: rgb(243, 150, 11);
 }
 
 .player-wrapper {
