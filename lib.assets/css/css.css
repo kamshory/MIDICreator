@@ -70,7 +70,12 @@ html {
 .button--record.button--active::before {
   opacity: 1;
 }
-
+.button--play {
+  width: 5rem;
+  height: 5rem;
+  font-size: 2rem;
+  vertical-align: inherit;
+}
 .button--play.button--active {
   background: #49F1D5;
   color: #ffffff;
@@ -106,6 +111,7 @@ html {
   width: 1540px;
   margin: 20px auto 0 auto;
   position: relative;
+  height: 100px;
 }
 
 .tuts-white {
@@ -117,7 +123,7 @@ html {
 }
 
 .tuts-white.note-on {
-  background-color: yellow;
+  background-color: rgb(43, 255, 0);
 }
 
 .tuts-black {
@@ -130,4 +136,11 @@ html {
 
 .tuts-black.note-on {
   background-color: red;
+}
+
+.player-wrapper {
+  padding-top: 20px;
+  position: relative;
+  width: 270px;
+  margin: auto;
 }/*# sourceMappingURL=css.css.map */

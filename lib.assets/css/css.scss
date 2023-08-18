@@ -157,6 +157,7 @@ html {
     width: 1540px;
     margin: 20px auto 0 auto;
     position: relative;
+    height: 100px;
 }
 .tuts-white{
     background-color: #FFFFFF;
@@ -179,3 +180,9 @@ html {
     background-color: red;
 }
 
+.player-wrapper{
+    padding-top: 20px;
+    position: relative;
+    width: 270px;
+    margin: auto;
+}

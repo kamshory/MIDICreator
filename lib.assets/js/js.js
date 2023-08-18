@@ -96,8 +96,15 @@ function processLocalFile(file) {
 
     mc.loadLocalAudioFile(file, function(float32Array){
         mc.soundToNote();
-        let midiData = mc.createMidi(false);
-        window.open('data:audio/midi;base64,'+midiData);
+        //let midiData = mc.createMidi(false);
+        //window.open('data:audio/midi;base64,'+midiData);
+        
+        JZZ.synth.Tiny.register('Web Audio');
+        
+        var player = new JZZ.gui.Player('player');
+        var data = mc.createMidi(true);
+        player.load(new JZZ.MIDI.SMF(data));
+        player.play();
     });
 }
 
