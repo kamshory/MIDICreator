@@ -70,12 +70,6 @@ html {
 .button--record.button--active::before {
   opacity: 1;
 }
-.button--play {
-  width: 5rem;
-  height: 5rem;
-  font-size: 2rem;
-  vertical-align: inherit;
-}
 .button--play.button--active {
   background: #49F1D5;
   color: #ffffff;

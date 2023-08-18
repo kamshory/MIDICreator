@@ -106,12 +106,6 @@ html {
     }
 
     &--play {
-        width: 5rem;
-        height: 5rem;
-
-        font-size: 2rem;
-
-        vertical-align: inherit;
 
         &.button--active {
             background: $blue-light;
