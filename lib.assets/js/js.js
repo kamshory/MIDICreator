@@ -5,6 +5,10 @@ let maxTempo = 720;
 let resolution = 32;
 let channel = 3;
 let sampleRate = 32000;
+let init = false;
+let player;
+let playing = false;
+
 
 window.onload = function () {
   let elem = document.querySelector(".piano-roll");
@@ -84,31 +88,39 @@ function handleDrop(e) {
 function handleFiles(files) {
   [...files].forEach(processLocalFile);
 }
-let init = false;
-let player;
+
 function initPlayer()
 {
   if(!init)
   {
     JZZ.synth.Tiny.register('Web Audio'); 
     player = new JZZ.gui.Player('player');
+    player.onPlay = function()
+    {
+      playing = true;
+    }
+    player.onStop = function()
+    {
+      playing = false;
+    }
+    player.onPause = function()
+    {
+      playing = false;
+    }
   }
   init = true;
 }
 
-function play(data)
+function playMidi(data)
 {
   initPlayer();
-  player.load(new JZZ.MIDI.SMF(data));
   if(playing)
   {
     player.stop();
   }
-  player.play();
-  playing = true;
+  player.load(new JZZ.MIDI.SMF(data));
 }
 
-let playing = false;
 
 function processLocalFile(file) {
     let mc = new MidiCreator({
@@ -122,7 +134,7 @@ function processLocalFile(file) {
     mc.loadLocalAudioFile(file, function(float32Array){
       mc.soundToNote();          
       var data = mc.createMidi(true);
-      play(data);
+      playMidi(data);
       let midiData = JZZ.lib.toBase64(data);
       window.open('data:audio/midi;base64,'+midiData);
     });
@@ -141,7 +153,7 @@ function processRemoteFile(path)
     mc.loadRemoteAudioFile(path, function(float32Array){
       mc.soundToNote();     
       var data = mc.createMidi(true);
-      play(data);
+      playMidi(data);
       let midiData = JZZ.lib.toBase64(data);
       window.open('data:audio/midi;base64,'+midiData);
     });
