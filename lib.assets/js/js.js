@@ -8,6 +8,50 @@ let sampleRate = 32000;
 let init = false;
 let player;
 let playing = false;
+let lastMidiData;
+
+function initPlayer()
+{
+  if(!init)
+  {
+    JZZ.synth.Tiny.register('Web Audio'); 
+    player = new JZZ.gui.Player('player');
+    player.onPlay = function()
+    {
+      playing = true;
+    }
+    player.onStop = function()
+    {
+      playing = false;
+    }
+    player.onPause = function()
+    {
+      playing = false;
+    }
+  }
+  init = true;
+}
+
+function playMidi(data)
+{
+  lastMidiData = data;
+  initPlayer();
+  if(playing)
+  {
+    player.stop();
+  }
+  player.load(new JZZ.MIDI.SMF(data));
+  let classList = document.querySelector('.button--midi').classList;
+  if(classList != null && classList.contains('button--disabled'))
+  {
+    document.querySelector('.button--midi').classList.remove('button--disabled');
+  } 
+}
+
+function downloadMidi()
+{
+  window.open('data:audio/midi;base64,'+JZZ.lib.toBase64(lastMidiData));
+}
 
 
 window.onload = function () {
@@ -37,8 +81,8 @@ window.onload = function () {
   };
   audioPicker.onStopRecording = function (duration) {
     console.log("stop recording ", duration);
-    let midiData = midiCreator.createMidi();
-    window.open("data:audio/midi;base64," + midiData);
+    let data = midiCreator.createMidi(true);
+    playMidi(data);
   };
   audioPicker.onProcessSample = function (time, pitcInfo) {
     midiCreator.addNote(pitcInfo.pitch, pitcInfo.velocity, time);
@@ -62,6 +106,12 @@ window.onload = function () {
   document.querySelector('#localfile').addEventListener('change', function(e){
     handleFiles(e.target.files);
   });
+  
+  document.querySelector('.button--midi').addEventListener('click', function(e){
+    downloadMidi();
+    e.preventDefault();
+  });
+  
 };
 
 function highlight(e) {
@@ -89,37 +139,7 @@ function handleFiles(files) {
   [...files].forEach(processLocalFile);
 }
 
-function initPlayer()
-{
-  if(!init)
-  {
-    JZZ.synth.Tiny.register('Web Audio'); 
-    player = new JZZ.gui.Player('player');
-    player.onPlay = function()
-    {
-      playing = true;
-    }
-    player.onStop = function()
-    {
-      playing = false;
-    }
-    player.onPause = function()
-    {
-      playing = false;
-    }
-  }
-  init = true;
-}
 
-function playMidi(data)
-{
-  initPlayer();
-  if(playing)
-  {
-    player.stop();
-  }
-  player.load(new JZZ.MIDI.SMF(data));
-}
 
 
 function processLocalFile(file) {
@@ -135,8 +155,6 @@ function processLocalFile(file) {
       mc.soundToNote();          
       var data = mc.createMidi(true);
       playMidi(data);
-      let midiData = JZZ.lib.toBase64(data);
-      window.open('data:audio/midi;base64,'+midiData);
     });
 }
 
@@ -154,8 +172,6 @@ function processRemoteFile(path)
       mc.soundToNote();     
       var data = mc.createMidi(true);
       playMidi(data);
-      let midiData = JZZ.lib.toBase64(data);
-      window.open('data:audio/midi;base64,'+midiData);
     });
 }
 
