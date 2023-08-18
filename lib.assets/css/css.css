@@ -71,10 +71,8 @@ html {
   opacity: 1;
 }
 .button--play {
-  width: 5rem;
-  height: 5rem;
-  font-size: 2rem;
-  vertical-align: inherit;
+  width: 8rem;
+  height: 8rem;
 }
 .button--play.button--active {
   background: #49F1D5;

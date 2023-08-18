@@ -224,7 +224,6 @@ class MidiCreator {
         );
 
         // send event note Off at time1
-        console.log(this.midiData[i].time, this.midiData[i].duration)
         time2 = this.midiTime(this.midiData[i].time + this.midiData[i].duration);
         if (!isNaN(time2)) {
           let note = JZZ.MIDI.noteOff(this.channel, this.midiData[i].name);
@@ -326,7 +325,7 @@ class MidiCreator {
       return t0;
     };
 
-    this.loadAudioFile = function (path, callback) {
+    this.loadRemoteAudioFile = function (path, callback) {
       let audioContext = new AudioContext({
         sampleRate: this.sampleRate,
       });
@@ -354,11 +353,30 @@ class MidiCreator {
       ajaxRequest.send();
     };
 
+
+    this.loadLocalAudioFile = function(file, callback)
+    {
+      let audioContext = new AudioContext({
+        sampleRate: this.sampleRate,
+      });
+      var reader1 = new FileReader();
+      reader1.onload = function(ev) {
+          
+        let float32Array = null;
+        // Decode audio
+        audioContext.decodeAudioData(ev.target.result).then(function(decodedData) {
+
+          float32Array = decodedData.getChannelData(0);
+          _this.waveformArray = float32Array;
+          if (typeof callback == "function") {
+            callback(float32Array);
+          }
+        });
+      };
+      reader1.readAsArrayBuffer(file);   
+    }
+
     this.chunkSize = function () {
-      /*
-            sample per second = 32000
-            chunkSize = sampleRate * 60 / (tempo*resolution)
-            */
       return (this.sampleRate * 240) / (this.tempo * this.resolution);
     };
 
