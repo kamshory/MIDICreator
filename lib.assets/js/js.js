@@ -2,7 +2,7 @@ let audioPicker;
 let midiCreator;
 let tempo = 80;
 let maxTempo = 720;
-let resolution = 32;
+let resolution = 16;
 let channel = 3;
 let sampleRate = 32000;
 let init = false;

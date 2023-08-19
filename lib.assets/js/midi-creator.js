@@ -66,6 +66,10 @@ class MidiCreator {
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
     this.minInterval = 60000 / (this.tempo * this.resolution);
 
+    /**
+     * Preview note
+     * @param {object} data MIDI event information
+     */
     this.onPreviewNote = function (data) {};
 
     /**
@@ -265,9 +269,10 @@ class MidiCreator {
       let time1 = 0;
       let time2 = 0;
 
-      if (this.midiData[this.midiData.length - 1].close) {
+      if (!this.midiData[this.midiData.length - 1].close) {
         this.midiData[this.midiData.length - 1].duration =
           this.now() - this.midiData[this.midiData.length - 1].start;
+          this.midiData[this.midiData.length - 1].close = true;
       }
 
       for (let i in this.midiData) {
