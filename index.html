@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <script src="lib.assets/js/js.js"></script>
 
 </head>
+
 <body>
 
     <div class="all">
@@ -22,36 +24,37 @@
             <div class="sound-recorder">
                 <div class="js-message message"></div>
                 <div class="recorder">
-                <div class="waveform">
-                    <canvas class="js-canvas waveform__canvas"></canvas>
-                </div>
-                <div class="toolbar">
-                    <button class="js-file button button--open"><i class="fa fa-folder" aria-hidden="true"></i></button>
-                    <button class="js-record button button--record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
-                    <button class="js-play button button--play button--disabled"><i class="fa fa-play" aria-hidden="true"></i></button>
-                    <button class="js-midi button button--midi button--disabled"><i class="fa fa-music" aria-hidden="true"></i></button>
-                    <audio class="js-audio audio audio--hidden" controls/>
-                    <input type="file" id="localfile" aria-hidden="true">
-                </div>
+                    <div class="toolbar">
+                        <button class="js-file button button--open"><i class="fa fa-folder"
+                                aria-hidden="true"></i></button>
+                        <button class="js-record button button--record"><i class="fa fa-microphone"
+                                aria-hidden="true"></i></button>
+                        <button class="js-play button button--play button--disabled"><i class="fa fa-play"
+                                aria-hidden="true"></i></button>
+                        <button class="js-midi button button--midi button--disabled"><i class="fa fa-music"
+                                aria-hidden="true"></i></button>
+                        <audio class="js-audio audio audio--hidden" controls />
+                        <input type="file" id="localfile" aria-hidden="true">
+                    </div>
+
+                    <div class="waveform">
+                        <canvas class="js-canvas waveform__canvas"></canvas>
+                    </div>
+
                 </div>
             </div>
-
-            <div class="note-monitor">
-
-            </div>
-            
-            
 
             <div class="piano-roll">
 
             </div>
-            
+
             <div class="player-wrapper">
                 <div id="player"></div>
             </div>
-            
+
 
         </div>
     </div>
 </body>
+
 </html>

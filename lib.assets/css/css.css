@@ -88,7 +88,7 @@ html {
 }
 
 .message {
-  transtion: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
   padding: 1rem 2rem;
   background: #ED6A5F;
   opacity: 0;
