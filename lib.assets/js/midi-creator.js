@@ -174,30 +174,64 @@ class MidiCreator {
     };
 
     /**
+     * Get velocity from amplitude
+     * @param {number} amplitude Amplitude (0 to 1)
+     * @returns {number} Velocity
+     */
+    this.getVelocity = function(amplitude)
+    {
+      let velocity = 40 + 200 * amplitude;
+      if (velocity > 127) {
+        velocity = 127;
+      }
+      return velocity;
+    }
+    this.sumPitch = 0;
+    this.countPitch = 0;
+    this.addPitch = function(pitch)
+    {
+      this.sumPitch += pitch;
+      this.countPitch++;
+    }
+    this.clearPitch = function()
+    {
+      let avg = this.getPitchAverage();
+      this.sumPitch = 0;
+      this.countPitch = 0;  
+      return avg;
+    }
+    this.getPitchAverage = function()
+    {
+      if(this.countPitch == 0)
+      {
+        return 0;
+      }
+      return this.sumPitch / this.countPitch;
+    }
+
+    /**
      * Add note
-     * @param {number} pitch
-     * @param {number} velocity
-     * @param {number} currentTime
-     * @param {boolean} force
+     * @param {number} pitch Pitch 
+     * @param {number} amplitude Amplitude
+     * @param {number} currentTime Current time
+     * @param {boolean} force Force
      * @returns void
      */
-    this.addNote = function (pitch, velocity, currentTime, force) {
+    this.addNote = function (pitch, amplitude, currentTime, force) {
       if (this.isInvalidPitch(pitch, force)) {
         return;
       }
+      // add pitch
+      this.addPitch(pitch);
       currentTime = currentTime || this.now();
       if (this.isInvalidInterval(currentTime, force)) {
         return;
       }
-
       this.lastTime = currentTime;
-
-      let note = this.noteFromPitch(pitch);
-
-      velocity = 40 + 200 * velocity;
-      if (velocity > 127) {
-        velocity = 127;
-      }
+      // get note from pitch average
+      let note = this.noteFromPitch(this.clearPitch());
+      let velocity = this.getVelocity(amplitude);
+      
       let process = false;
       if (
         !process &&
