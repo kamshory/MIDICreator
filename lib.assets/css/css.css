@@ -17,6 +17,10 @@ html {
   font-size: 10px;
 }
 
+.recorder {
+  position: relative;
+}
+
 .waveform {
   position: relative;
   padding: 4rem 0;
