@@ -1,7 +1,7 @@
 class MidiCreator {
   constructor(conf) {
     conf = conf || {};
-    
+
     /**
      * Tempo or beat per minute
      */
@@ -66,10 +66,7 @@ class MidiCreator {
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
     this.minInterval = 60000 / (this.tempo * this.resolution);
 
-    this.onPreviewNote = function(data)
-    {
-
-    }
+    this.onPreviewNote = function (data) {};
 
     /**
      * Get note from pitch
@@ -94,7 +91,7 @@ class MidiCreator {
      * Get centsOff from pitch
      * @param {number} frequency Frequency in Hertz
      * @param {number} midi Get frequency from MIDI note code
-     * @returns 
+     * @returns
      */
     this.centsOffFromPitch = function (frequency, midi) {
       return Math.floor(
@@ -153,19 +150,39 @@ class MidiCreator {
     };
 
     /**
-     * Add note
+     * Check if pitch is invalid
      * @param {number} pitch 
-     * @param {number} velocity 
+     * @param {boolean} force 
+     * @returns {boolean} true if pitch is invalid or always false if force is true
+     */
+    this.isInvalidPitch = function (pitch, force) {
+      return !force && (pitch < this.pitchMin || pitch > this.pitchMax);
+    };
+
+    /**
+     * Check if interval is invalid
      * @param {number} currentTime 
      * @param {boolean} force 
+     * @returns {boolean} true if interval is invalid or always false if force is true
+     */
+    this.isInvalidInterval = function (currentTime, force) {
+      return !force && currentTime - this.lastTime < this.minInterval;
+    };
+
+    /**
+     * Add note
+     * @param {number} pitch
+     * @param {number} velocity
+     * @param {number} currentTime
+     * @param {boolean} force
      * @returns void
      */
     this.addNote = function (pitch, velocity, currentTime, force) {
-      if (!force && (pitch < this.pitchMin || pitch > this.pitchMax)) {
+      if (this.isInvalidPitch(pitch, force)) {
         return;
       }
       currentTime = currentTime || this.now();
-      if (!force && (currentTime - this.lastTime < this.minInterval)) {
+      if (this.isInvalidInterval(currentTime, force)) {
         return;
       }
 
@@ -212,7 +229,7 @@ class MidiCreator {
             close: false,
           };
           this.midiData.push(newData);
-          this.onPreviewNote(newData)
+          this.onPreviewNote(newData);
         }
       }
 
@@ -267,13 +284,13 @@ class MidiCreator {
         );
 
         // send event note Off at time1
-        time2 = this.midiTime(this.midiData[i].time + this.midiData[i].duration);
+        time2 = this.midiTime(
+          this.midiData[i].time + this.midiData[i].duration
+        );
         if (!isNaN(time2)) {
           let note = JZZ.MIDI.noteOff(this.channel, this.midiData[i].name);
           track1.add(time2, note);
-        }
-        else
-        {
+        } else {
           time2 = time1;
         }
       }
@@ -283,8 +300,7 @@ class MidiCreator {
       smf.push(track1);
 
       let str = smf.dump(); // MIDI file dumped as a string
-      if(raw)
-      {
+      if (raw) {
         return str;
       }
       return JZZ.lib.toBase64(str); // convert to base-64 string
@@ -292,8 +308,8 @@ class MidiCreator {
 
     /**
      * Get note from number
-     * @param {number} midi 
-     * @param {boolean} sharps 
+     * @param {number} midi
+     * @param {boolean} sharps
      * @returns {string}
      */
     this.noteFromNumber = function (midi, sharps) {
@@ -306,8 +322,8 @@ class MidiCreator {
 
     /**
      * Get pitch infomation
-     * @param {FlatArray} buffer 
-     * @param {number} sampleRate 
+     * @param {FlatArray} buffer
+     * @param {number} sampleRate
      * @returns {object}
      */
     this.autoCorrelate = function (buffer, sampleRate) {
@@ -379,10 +395,10 @@ class MidiCreator {
 
     /**
      * Fix pitch
-     * @param {number} t0 
-     * @param {number} a 
-     * @param {number} b 
-     * @returns 
+     * @param {number} t0
+     * @param {number} a
+     * @param {number} b
+     * @returns
      */
     this.fixPitch = function (t0, a, b) {
       if (a) {
@@ -429,27 +445,26 @@ class MidiCreator {
      * @param {File} file local file
      * @param {function} callback Callback function triggered when audio data has been decoded
      */
-    this.loadLocalAudioFile = function(file, callback)
-    {
+    this.loadLocalAudioFile = function (file, callback) {
       let audioContext = new AudioContext({
         sampleRate: this.sampleRate,
       });
       var reader1 = new FileReader();
-      reader1.onload = function(ev) {
-          
+      reader1.onload = function (ev) {
         let float32Array = null;
         // Decode audio
-        audioContext.decodeAudioData(ev.target.result).then(function(decodedData) {
-
-          float32Array = decodedData.getChannelData(0);
-          _this.waveformArray = float32Array;
-          if (typeof callback == "function") {
-            callback(float32Array);
-          }
-        });
+        audioContext
+          .decodeAudioData(ev.target.result)
+          .then(function (decodedData) {
+            float32Array = decodedData.getChannelData(0);
+            _this.waveformArray = float32Array;
+            if (typeof callback == "function") {
+              callback(float32Array);
+            }
+          });
       };
-      reader1.readAsArrayBuffer(file);   
-    }
+      reader1.readAsArrayBuffer(file);
+    };
 
     /**
      * Get chunk size from sample, tempo and resolution
@@ -461,7 +476,7 @@ class MidiCreator {
 
     /**
      * Get current time by position
-     * @param {number} position 
+     * @param {number} position
      * @returns {number}
      */
     this.getCurrentTime = function (position) {
@@ -486,7 +501,7 @@ class MidiCreator {
 
         // not all data will be processed
         offset = this.getOffset(start, end);
-        
+
         let buf = this.waveformArray.slice(offset.start, offset.end);
 
         let ac = this.autoCorrelate(buf, this.sampleRate);
@@ -501,39 +516,36 @@ class MidiCreator {
 
       return this;
     };
-    
+
     /**
      * Get real end of data
-     * @param {number} start 
-     * @param {number} end 
-     * @param {number} max 
-     * @param {number} cSize 
+     * @param {number} start
+     * @param {number} end
+     * @param {number} max
+     * @param {number} cSize
      * @returns {number}
      */
-    this.getEnd = function(start, end, max, cSize)
-    {
+    this.getEnd = function (start, end, max, cSize) {
       end = start + cSize;
       if (end > max) {
         end = max;
       }
       return end;
-    }
-    
+    };
+
     /**
      * Get offset
      * @param {number} start Start
      * @param {number} end End
      * @returns {object}
      */
-    this.getOffset = function(start, end)
-    {
+    this.getOffset = function (start, end) {
       let end2 = end;
-      if(end2 - start > this.minSample)
-      {
+      if (end2 - start > this.minSample) {
         end2 = start + this.minSample;
       }
-      return {start:start, end:end2};
-    }
+      return { start: start, end: end2 };
+    };
 
     let _this = this;
   }
