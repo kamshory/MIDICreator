@@ -17,6 +17,10 @@ html {
   font-size: 10px;
 }
 
+.recorder {
+  position: relative;
+}
+
 .waveform {
   position: relative;
   padding: 4rem 0;
@@ -88,7 +92,7 @@ html {
 }
 
 .message {
-  transtion: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
   padding: 1rem 2rem;
   background: #ED6A5F;
   opacity: 0;

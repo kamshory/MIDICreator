@@ -2,85 +2,96 @@ let audioPicker;
 let midiCreator;
 let tempo = 80;
 let maxTempo = 720;
-let resolution = 32;
+let resolution = 16;
 let channel = 3;
 let sampleRate = 32000;
 let init = false;
 let player;
 let playing = false;
 let lastMidiData;
+let timeout = null;
+let noteOff = 1000;
 
-function initPlayer()
-{
-  if(!init)
-  {
-    JZZ.synth.Tiny.register('Web Audio'); 
-    player = new JZZ.gui.Player('player');
-    player.onPlay = function()
-    {
+
+function initPlayer() {
+  if (!init) {
+    JZZ.synth.Tiny.register("Web Audio");
+    player = new JZZ.gui.Player("player");
+    player.onPlay = function () {
       playing = true;
-    }
-    player.onStop = function()
-    {
+    };
+    player.onStop = function () {
       playing = false;
-    }
-    player.onPause = function()
-    {
+    };
+    player.onPause = function () {
       playing = false;
-    }
+    };
   }
   init = true;
 }
 
-function playMidi(data)
-{
+function playMidi(data) {
   lastMidiData = data;
   initPlayer();
-  if(playing)
-  {
+  if (playing) {
     player.stop();
   }
   player.load(new JZZ.MIDI.SMF(data));
-  let classList = document.querySelector('.button--midi').classList;
-  if(classList != null && classList.contains('button--disabled'))
+  let classList = document.querySelector(".button--midi").classList;
+  if (classList != null && classList.contains("button--disabled")) {
+    document
+      .querySelector(".button--midi")
+      .classList.remove("button--disabled");
+  }
+}
+
+/**
+ * Download MIDI
+ */
+function downloadMidi() {
+  window.open("data:audio/midi;base64," + JZZ.lib.toBase64(lastMidiData));
+}
+
+/**
+ * Clear piano roll
+ */
+function clearNote() {
+  if(timeout != null)
   {
-    document.querySelector('.button--midi').classList.remove('button--disabled');
-  } 
+    clearTimeout(timeout);
+  }
+  let elems = document.querySelectorAll(".piano-roll .note-on");
+  if (elems != null) {
+    for (let i = 0; i < elems.length; i++) {
+      elems[i].classList.remove("note-on");
+    }
+  }
 }
-
-function downloadMidi()
-{
-  window.open('data:audio/midi;base64,'+JZZ.lib.toBase64(lastMidiData));
-}
-
 
 window.onload = function () {
   let elem = document.querySelector(".piano-roll");
   audioPicker = new SoundPicker();
   audioPicker.onStartRecording = function (sampleRate) {
-    console.log("start recording");
     midiCreator = new MidiCreator({
       tempo: tempo,
       maxTempo: maxTempo,
       resolution: resolution,
       sampleRate: sampleRate,
-      channel: channel
+      channel: channel,
     });
     midiCreator.onPreviewNote = function (data) {
-      let elems = elem.querySelectorAll(".note-on");
-      if (elems != null) {
-        for (let i = 0; i < elems.length; i++) {
-          elems[i].classList.remove("note-on");
-        }
-      }
+      clearNote();
       let tut = elem.querySelector('[data-index="' + data.midi + '"]');
       if (tut != null) {
         tut.classList.add("note-on");
+        timeout = setTimeout(function(){
+          clearNote();
+        }, noteOff);
       }
     };
   };
   audioPicker.onStopRecording = function (duration) {
-    console.log("stop recording ", duration);
+    clearNote();
     let data = midiCreator.createMidi(true);
     playMidi(data);
   };
@@ -103,15 +114,16 @@ window.onload = function () {
   });
   dropArea.addEventListener("drop", handleDrop, false);
   dropArea.addEventListener("click", handleClick, false);
-  document.querySelector('#localfile').addEventListener('change', function(e){
+  document.querySelector("#localfile").addEventListener("change", function (e) {
     handleFiles(e.target.files);
   });
-  
-  document.querySelector('.button--midi').addEventListener('click', function(e){
-    downloadMidi();
-    e.preventDefault();
-  });
-  
+
+  document
+    .querySelector(".button--midi")
+    .addEventListener("click", function (e) {
+      downloadMidi();
+      e.preventDefault();
+    });
 };
 
 function highlight(e) {
@@ -125,9 +137,8 @@ function preventDefaults(e) {
   e.preventDefault();
   e.stopPropagation();
 }
-function handleClick(e)
-{
-    document.querySelector('#localfile').click();
+function handleClick(e) {
+  document.querySelector("#localfile").click();
 }
 function handleDrop(e) {
   let dt = e.dataTransfer;
@@ -139,42 +150,37 @@ function handleFiles(files) {
   [...files].forEach(processLocalFile);
 }
 
-
-
-
 function processLocalFile(file) {
-    let mc = new MidiCreator({
-      tempo: tempo,
-      maxTempo: maxTempo,
-      resolution: resolution,
-      channel: channel,
-      sampleRate: sampleRate,
-    });
+  let mc = new MidiCreator({
+    tempo: tempo,
+    maxTempo: maxTempo,
+    resolution: resolution,
+    channel: channel,
+    sampleRate: sampleRate,
+  });
 
-    mc.loadLocalAudioFile(file, function(float32Array){
-      mc.soundToNote();          
-      var data = mc.createMidi(true);
-      playMidi(data);
-    });
+  mc.loadLocalAudioFile(file, function (float32Array) {
+    mc.soundToNote();
+    var data = mc.createMidi(true);
+    playMidi(data);
+  });
 }
 
-function processRemoteFile(path)
-{
-    let mc = new MidiCreator({
-      tempo: tempo,
-      maxTempo: maxTempo,
-      resolution: resolution,
-      channel: channel,
-      sampleRate: sampleRate,
-    });
-    
-    mc.loadRemoteAudioFile(path, function(float32Array){
-      mc.soundToNote();     
-      var data = mc.createMidi(true);
-      playMidi(data);
-    });
-}
+function processRemoteFile(path) {
+  let mc = new MidiCreator({
+    tempo: tempo,
+    maxTempo: maxTempo,
+    resolution: resolution,
+    channel: channel,
+    sampleRate: sampleRate,
+  });
 
+  mc.loadRemoteAudioFile(path, function (float32Array) {
+    mc.soundToNote();
+    var data = mc.createMidi(true);
+    playMidi(data);
+  });
+}
 
 function createPianoRoll(elem) {
   let factor = 16;

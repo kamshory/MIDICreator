@@ -56,18 +56,25 @@ class SoundPicker {
     this.onStopRecording = function (duration) {
     };
 
-    // Show a message in the UI
+    /**
+     * Show a message in the UI
+     * @param {string} message 
+     */
     this.setMessage = (message) => {
       this.messageContainer.innerHTML = message;
       this.messageContainer.classList.add("message--visible");
     };
 
-    // Hide the message
+    /**
+     * Hide the message
+     */
     this.hideMessage = () => {
       this.messageContainer.classList.remove("message--visible");
     };
 
-    // Request access to the user's microphone.
+    /**
+     * Request access to the user's microphone.
+     */
     this.requestMicrophoneAccess = () => {
       if (navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia({ audio: true }).then(
@@ -87,7 +94,10 @@ class SoundPicker {
       }
     };
 
-    // Set all variables which needed the audio stream
+    /**
+     * Set all variables which needed the audio stream
+     * @param {MediaStream} stream 
+     */
     this.setAudioStream = (stream) => {
       this.input = this.audioContext.createMediaStreamSource(stream);
       this.recorder = new window.MediaRecorder(stream);
@@ -96,18 +106,25 @@ class SoundPicker {
       this.setupWaveform();
     };
 
-    // Setup the recorder actions
+    /**
+     * Setup the recorder actions
+     */
     this.setRecorderActions = () => {
       this.recorder.ondataavailable = this.saveChunkToRecording;
       this.recorder.onstop = this.saveRecording;
     };
 
-    // Save chunks of the incomming audio to the chuncks array
+    /**
+     * Save chunks of the incomming audio to the chuncks array
+     * @param {Event} event 
+     */
     this.saveChunkToRecording = (event) => {
       this.chunks.push(event.data);
     };
 
-    // Save the recording
+    /**
+     * Save the recording
+     */
     this.saveRecording = () => {
       this.recording = URL.createObjectURL(
         new Blob(this.chunks, { type: "audio/ogg; codecs=opus" })
@@ -118,7 +135,9 @@ class SoundPicker {
 
     };
 
-    // Start recording
+    /**
+     * Start recording
+     */
     this.startRecording = () => {
       this.isRecording = true;
       this.recordButton.classList.add("button--active");
@@ -127,7 +146,9 @@ class SoundPicker {
       this.onStartRecording(this.audioContext.sampleRate);
     };
 
-    // Stop recording
+    /**
+     * Stop recording
+     */
     this.stopRecording = () => {
       this.onStopRecording((new Date()).getTime() - this.recordingTime);
       this.isRecording = false;
@@ -135,7 +156,9 @@ class SoundPicker {
       this.recorder.stop();
     };
 
-    // Toggle the recording button
+    /**
+     * Toggle the recording button
+     */
     this.toggleRecording = () => {
       if (this.isRecording) {
         this.stopRecording();
@@ -144,7 +167,9 @@ class SoundPicker {
       }
     };
 
-    // Setup the canvas to draw the waveform
+    /**
+     * Setup the canvas to draw the waveform
+     */
     this.setupWaveform = () => {
       this.canvasContext = this.canvas.getContext("2d");
 
@@ -161,7 +186,11 @@ class SoundPicker {
       this.scriptProcessor.onaudioprocess = this.processInput;
     };
 
-
+    /**
+     * Render the bars
+     * @param {Number} time 
+     * @param {Array} arr 
+     */
     this.processAudioBuffer = function (time, arr) {
       let pitchInfo = this.autoCorrelate(arr, this.audioContext.sampleRate);
       if (pitchInfo.pitch > -1) {
@@ -169,6 +198,12 @@ class SoundPicker {
       }
     };
 
+    /**
+     * Get frequency from array sample
+     * @param {Float32Array} buffer 
+     * @param {Number} sampleRate 
+     * @returns 
+     */
     this.autoCorrelate = function (buffer, sampleRate) {
       // Implements the ACF2+ algorithm
       let bufSize = buffer.length;
@@ -243,7 +278,10 @@ class SoundPicker {
       return t0;
     };
 
-    // Process the microphone input
+    /**
+     * Process the microphone input
+     * @param {AudioProcessingEvent} audioProcessingEvent 
+     */
     this.processInput = (audioProcessingEvent) => {
       if (this.isRecording) {
         let inputBuffer = audioProcessingEvent.inputBuffer;
@@ -286,7 +324,10 @@ class SoundPicker {
       return values / length;
     };
 
-    // Render the bars
+    /**
+     * Render the bars
+     * @param {Array} barsToRender 
+     */
     this.renderBars = (barsToRender) => {
       if (!this.drawing) {
         {
@@ -317,7 +358,9 @@ class SoundPicker {
       }
     };
 
-    // Play the recording
+    /**
+     * Play the recording
+     */
     this.play = () => {
       this.isPlaying = true;
 
@@ -328,7 +371,9 @@ class SoundPicker {
       this.playButtonIcon.classList.remove("fa-play");
     };
 
-    // Stop the recording
+    /**
+     * Stop the recording
+     */
     this.stop = () => {
       this.isPlaying = false;
 
@@ -340,7 +385,9 @@ class SoundPicker {
       this.playButtonIcon.classList.remove("fa-pause");
     };
 
-    // Toggle the play button
+    /**
+     * Toggle the play button
+     */
     this.togglePlay = () => {
       if (this.isPlaying) {
         this.stop();
@@ -349,15 +396,23 @@ class SoundPicker {
       }
     };
 
-    // Setup the audio player
+    /**
+     * Setup the audio player
+     */
     this.setupPlayer = () => {
       this.audioPlayer.addEventListener("ended", () => {
         this.stop();
       });
     };
 
-    // Start the application
+    /**
+     * Start the application
+     */
     this.requestMicrophoneAccess();
+
+    /**
+     * Setup player
+     */
     this.setupPlayer();
 
     // Add event listeners to the buttons

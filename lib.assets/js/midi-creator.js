@@ -1,7 +1,7 @@
 class MidiCreator {
   constructor(conf) {
     conf = conf || {};
-    
+
     /**
      * Tempo or beat per minute
      */
@@ -65,16 +65,19 @@ class MidiCreator {
     this.noteFlats = "C Db D Eb E F Gb G Ab A Bb B".split(" ");
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
     this.minInterval = 60000 / (this.tempo * this.resolution);
+    this.sumPitch = 0;
+    this.countPitch = 0;
 
-    this.onPreviewNote = function(data)
-    {
-
-    }
+    /**
+     * Preview note
+     * @param {Object} data MIDI event information
+     */
+    this.onPreviewNote = function (data) {};
 
     /**
      * Get note from pitch
-     * @param {number} frequency Frequency calculated by autoCorrelate samples
-     * @returns {number} Midi note code
+     * @param {Number} frequency Frequency calculated by autoCorrelate samples
+     * @returns {Number} Midi note code
      */
     this.noteFromPitch = function (frequency) {
       let noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
@@ -83,8 +86,8 @@ class MidiCreator {
 
     /**
      * Get frequency from MIDI note number
-     * @param {number} midi Get frequency from MIDI note code
-     * @returns {number} Frequency in Hertz
+     * @param {Number} midi Get frequency from MIDI note code
+     * @returns {Number} Frequency in Hertz
      */
     this.frequencyFromNoteNumber = function (midi) {
       return 440 * Math.pow(2, (midi - 69) / 12);
@@ -92,9 +95,9 @@ class MidiCreator {
 
     /**
      * Get centsOff from pitch
-     * @param {number} frequency Frequency in Hertz
-     * @param {number} midi Get frequency from MIDI note code
-     * @returns 
+     * @param {Number} frequency Frequency in Hertz
+     * @param {Number} midi Get frequency from MIDI note code
+     * @returns
      */
     this.centsOffFromPitch = function (frequency, midi) {
       return Math.floor(
@@ -106,7 +109,7 @@ class MidiCreator {
     /**
      * Get pitch from note
      * @param {string} note Note
-     * @returns {number} Frequency in Hertz
+     * @returns {Number} Frequency in Hertz
      */
     this.pitchFromNote = function (note) {
       let arr = [];
@@ -126,9 +129,9 @@ class MidiCreator {
 
     /**
      * Get pitch from index and octave
-     * @param {number} index Index
-     * @param {number} octave Octave
-     * @returns {number} Frequency in Hertz
+     * @param {Number} index Index
+     * @param {Number} octave Octave
+     * @returns {Number} Frequency in Hertz
      */
     this.pitchFromIndexAndOctave = function (index, octave) {
       return 440 * Math.pow(Math.pow(2, 1 / 12), octave * 12 + index - 57);
@@ -136,8 +139,8 @@ class MidiCreator {
 
     /**
      * Get octave from note
-     * @param {number} note MIDI note code
-     * @returns {number} Octave
+     * @param {Number} note MIDI note code
+     * @returns {Number} Octave
      */
     this.octaveFromNote = function (note) {
       return parseInt(note / 12) - 1;
@@ -153,30 +156,97 @@ class MidiCreator {
     };
 
     /**
-     * Add note
-     * @param {number} pitch 
-     * @param {number} velocity 
-     * @param {number} currentTime 
+     * Check if pitch is invalid
+     * @param {Number} pitch 
      * @param {boolean} force 
-     * @returns void
+     * @returns {boolean} true if pitch is invalid or always false if force is true
      */
-    this.addNote = function (pitch, velocity, currentTime, force) {
-      if (!force && (pitch < this.pitchMin || pitch > this.pitchMax)) {
-        return;
-      }
-      currentTime = currentTime || this.now();
-      if (!force && (currentTime - this.lastTime < this.minInterval)) {
-        return;
-      }
+    this.isInvalidPitch = function (pitch, force) {
+      return !force && (pitch < this.pitchMin || pitch > this.pitchMax);
+    };
 
-      this.lastTime = currentTime;
+    /**
+     * Check if interval is invalid
+     * @param {Number} currentTime 
+     * @param {boolean} force 
+     * @returns {boolean} true if interval is invalid or always false if force is true
+     */
+    this.isInvalidInterval = function (currentTime, force) {
+      return !force && currentTime - this.lastTime < this.minInterval;
+    };
 
-      let note = this.noteFromPitch(pitch);
-
-      velocity = 40 + 200 * velocity;
+    /**
+     * Get velocity from amplitude
+     * @param {Number} amplitude Amplitude (0 to 1)
+     * @returns {Number} Velocity
+     */
+    this.getVelocity = function(amplitude)
+    {
+      let velocity = 40 + 200 * amplitude;
       if (velocity > 127) {
         velocity = 127;
       }
+      return velocity;
+    }
+
+    /**
+     * Add pitch for avegare
+     * @param {Number} pitch 
+     */
+    this.addPitch = function(pitch)
+    {
+      this.sumPitch += pitch;
+      this.countPitch++;
+    }
+
+    /**
+     * Get pitch average and clear pitch
+     * @returns Pitch average
+     */
+    this.clearPitch = function()
+    {
+      let avg = this.getPitchAverage();
+      this.sumPitch = 0;
+      this.countPitch = 0;  
+      return avg;
+    }
+
+    /**
+     * Get pitch average
+     * @returns Pitch average
+     */
+    this.getPitchAverage = function()
+    {
+      if(this.countPitch == 0)
+      {
+        return 0;
+      }
+      return this.sumPitch / this.countPitch;
+    }
+
+    /**
+     * Add note
+     * @param {Number} pitch Pitch 
+     * @param {Number} amplitude Amplitude
+     * @param {Number} currentTime Current time
+     * @param {boolean} force Force
+     * @returns void
+     */
+    this.addNote = function (pitch, amplitude, currentTime, force) {
+      if (this.isInvalidPitch(pitch, force)) {
+        return;
+      }
+      // add pitch
+      this.addPitch(pitch);
+      currentTime = currentTime || this.now();
+      if (this.isInvalidInterval(currentTime, force)) {
+        return;
+      }
+      this.lastTime = currentTime;
+      // get note from pitch average
+      let note = this.noteFromPitch(this.clearPitch());
+      let velocity = this.getVelocity(amplitude);
+      
       let process = false;
       if (
         !process &&
@@ -212,7 +282,7 @@ class MidiCreator {
             close: false,
           };
           this.midiData.push(newData);
-          this.onPreviewNote(newData)
+          this.onPreviewNote(newData);
         }
       }
 
@@ -221,7 +291,7 @@ class MidiCreator {
 
     /**
      * Get current time in unix timestamp
-     * @returns {number}
+     * @returns {Number}
      */
     this.now = function () {
       return new Date().getTime();
@@ -248,9 +318,10 @@ class MidiCreator {
       let time1 = 0;
       let time2 = 0;
 
-      if (this.midiData[this.midiData.length - 1].close) {
+      if (!this.midiData[this.midiData.length - 1].close) {
         this.midiData[this.midiData.length - 1].duration =
           this.now() - this.midiData[this.midiData.length - 1].start;
+          this.midiData[this.midiData.length - 1].close = true;
       }
 
       for (let i in this.midiData) {
@@ -267,13 +338,13 @@ class MidiCreator {
         );
 
         // send event note Off at time1
-        time2 = this.midiTime(this.midiData[i].time + this.midiData[i].duration);
+        time2 = this.midiTime(
+          this.midiData[i].time + this.midiData[i].duration
+        );
         if (!isNaN(time2)) {
           let note = JZZ.MIDI.noteOff(this.channel, this.midiData[i].name);
           track1.add(time2, note);
-        }
-        else
-        {
+        } else {
           time2 = time1;
         }
       }
@@ -283,8 +354,7 @@ class MidiCreator {
       smf.push(track1);
 
       let str = smf.dump(); // MIDI file dumped as a string
-      if(raw)
-      {
+      if (raw) {
         return str;
       }
       return JZZ.lib.toBase64(str); // convert to base-64 string
@@ -292,8 +362,8 @@ class MidiCreator {
 
     /**
      * Get note from number
-     * @param {number} midi 
-     * @param {boolean} sharps 
+     * @param {Number} midi
+     * @param {boolean} sharps
      * @returns {string}
      */
     this.noteFromNumber = function (midi, sharps) {
@@ -306,9 +376,9 @@ class MidiCreator {
 
     /**
      * Get pitch infomation
-     * @param {FlatArray} buffer 
-     * @param {number} sampleRate 
-     * @returns {object}
+     * @param {FlatArray} buffer
+     * @param {Number} sampleRate
+     * @returns {Object}
      */
     this.autoCorrelate = function (buffer, sampleRate) {
       // Implements the ACF2+ algorithm
@@ -379,16 +449,16 @@ class MidiCreator {
 
     /**
      * Fix pitch
-     * @param {number} t0 
-     * @param {number} a 
-     * @param {number} b 
-     * @returns 
+     * @param {Number} t
+     * @param {Number} a
+     * @param {Number} b
+     * @returns
      */
-    this.fixPitch = function (t0, a, b) {
+    this.fixPitch = function (t, a, b) {
       if (a) {
-        t0 = t0 - b / (2 * a);
+        t = t - b / (2 * a);
       }
-      return t0;
+      return t;
     };
 
     /**
@@ -403,9 +473,7 @@ class MidiCreator {
       let ajaxRequest = new XMLHttpRequest();
       ajaxRequest.open("GET", path, true);
       ajaxRequest.responseType = "arraybuffer";
-
       let float32Array = null;
-
       ajaxRequest.onload = () => {
         audioContext
           .decodeAudioData(ajaxRequest.response)
@@ -429,40 +497,39 @@ class MidiCreator {
      * @param {File} file local file
      * @param {function} callback Callback function triggered when audio data has been decoded
      */
-    this.loadLocalAudioFile = function(file, callback)
-    {
+    this.loadLocalAudioFile = function (file, callback) {
       let audioContext = new AudioContext({
         sampleRate: this.sampleRate,
       });
       var reader1 = new FileReader();
-      reader1.onload = function(ev) {
-          
+      reader1.onload = function (ev) {
         let float32Array = null;
         // Decode audio
-        audioContext.decodeAudioData(ev.target.result).then(function(decodedData) {
-
-          float32Array = decodedData.getChannelData(0);
-          _this.waveformArray = float32Array;
-          if (typeof callback == "function") {
-            callback(float32Array);
-          }
-        });
+        audioContext
+          .decodeAudioData(ev.target.result)
+          .then(function (decodedData) {
+            float32Array = decodedData.getChannelData(0);
+            _this.waveformArray = float32Array;
+            if (typeof callback == "function") {
+              callback(float32Array);
+            }
+          });
       };
-      reader1.readAsArrayBuffer(file);   
-    }
+      reader1.readAsArrayBuffer(file);
+    };
 
     /**
      * Get chunk size from sample, tempo and resolution
-     * @returns {number}
+     * @returns {Number}
      */
-    this.chunkSize = function () {
+    this.getChunkSize = function () {
       return (this.sampleRate * 240) / (this.tempo * this.resolution);
     };
 
     /**
      * Get current time by position
-     * @param {number} position 
-     * @returns {number}
+     * @param {Number} position
+     * @returns {Number}
      */
     this.getCurrentTime = function (position) {
       return (position * 60000) / (this.tempo * this.sampleRate);
@@ -470,26 +537,26 @@ class MidiCreator {
 
     /**
      * Create not from sound
-     * @returns {object}
+     * @returns {Object}
      */
     this.soundToNote = function () {
       this.resetMidi();
-      let bSize = this.waveformArray.length;
-      let max = bSize - 1;
-      let cSize = this.chunkSize();
+      let bufferSize = this.waveformArray.length;
+      let max = bufferSize - 1;
+      let chunkSize = this.getChunkSize();
       let start = 0;
       let end = 0;
       let offset = {};
       do {
         // get real end of data
-        end = this.getEnd(start, end, max, cSize);
+        end = this.getEnd(start, end, max, chunkSize);
 
         // not all data will be processed
         offset = this.getOffset(start, end);
-        
-        let buf = this.waveformArray.slice(offset.start, offset.end);
 
-        let ac = this.autoCorrelate(buf, this.sampleRate);
+        let buffer = this.waveformArray.slice(offset.start, offset.end);
+
+        let ac = this.autoCorrelate(buffer, this.sampleRate);
 
         if (typeof ac.pitch != "undefined") {
           let currentTime = this.getCurrentTime(start);
@@ -501,39 +568,36 @@ class MidiCreator {
 
       return this;
     };
-    
+
     /**
      * Get real end of data
-     * @param {number} start 
-     * @param {number} end 
-     * @param {number} max 
-     * @param {number} cSize 
-     * @returns {number}
+     * @param {Number} start
+     * @param {Number} end
+     * @param {Number} max
+     * @param {Number} cSize
+     * @returns {Number}
      */
-    this.getEnd = function(start, end, max, cSize)
-    {
+    this.getEnd = function (start, end, max, cSize) {
       end = start + cSize;
       if (end > max) {
         end = max;
       }
       return end;
-    }
-    
+    };
+
     /**
      * Get offset
-     * @param {number} start Start
-     * @param {number} end End
-     * @returns {object}
+     * @param {Number} start Start
+     * @param {Number} end End
+     * @returns {Object}
      */
-    this.getOffset = function(start, end)
-    {
+    this.getOffset = function (start, end) {
       let end2 = end;
-      if(end2 - start > this.minSample)
-      {
+      if (end2 - start > this.minSample) {
         end2 = start + this.minSample;
       }
-      return {start:start, end:end2};
-    }
+      return { start: start, end: end2 };
+    };
 
     let _this = this;
   }

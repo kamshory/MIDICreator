@@ -30,7 +30,9 @@ html {
     font-size: 10px;
 }
 
-.recorder {}
+.recorder {
+    position: relative;
+}
 
 .waveform {
     position: relative;
@@ -131,7 +133,7 @@ html {
 }
 
 .message {
-    transtion: opacity .4s ease-in-out;
+    transition: opacity .4s ease-in-out;
     padding: 1rem 2rem;
 
     background: $red;
