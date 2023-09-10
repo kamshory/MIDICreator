@@ -38,7 +38,7 @@ function playMidi(data) {
   }
   player.load(new JZZ.MIDI.SMF(data));
   let classList = document.querySelector(".button--midi").classList;
-  if (classList != null && classList.contains("button--disabled")) {
+  if (classList?.contains("button--disabled")) {
     document
       .querySelector(".button--midi")
       .classList.remove("button--disabled");
@@ -62,7 +62,8 @@ function clearNote() {
   }
   let elems = document.querySelectorAll(".piano-roll .note-on");
   if (elems != null) {
-    for (let i = 0; i < elems.length; i++) {
+    let max = elems.length;
+    for (let i = 0; i < max; i++) {
       elems[i].classList.remove("note-on");
     }
   }
@@ -161,7 +162,7 @@ function processLocalFile(file) {
 
   mc.loadLocalAudioFile(file, function (float32Array) {
     mc.soundToNote();
-    var data = mc.createMidi(true);
+    let data = mc.createMidi(true);
     playMidi(data);
   });
 }
@@ -177,7 +178,7 @@ function processRemoteFile(path) {
 
   mc.loadRemoteAudioFile(path, function (float32Array) {
     mc.soundToNote();
-    var data = mc.createMidi(true);
+    let data = mc.createMidi(true);
     playMidi(data);
   });
 }
@@ -185,8 +186,9 @@ function processRemoteFile(path) {
 function createPianoRoll(elem) {
   let factor = 16;
   let min = 12;
-  let max = 132;
-  elem.style.width = Math.floor((max - min) / 12) * 7 * factor + "px";
+  let max = 133;
+  let width = 71 * factor; // 10 octave
+  elem.style.width = width + "px";
   for (let i = min; i < max; i++) {
     let tuts = document.createElement("div");
     let mod = i % 12;
@@ -194,7 +196,6 @@ function createPianoRoll(elem) {
     let key = inf[mod];
     if (key.type == 1) {
       tuts.className = "tuts tuts-white";
-      let j = i;
       tuts.setAttribute("data-index", i);
       tuts.style.left = octave * 7 * factor + key.offset * factor + "px";
       tuts.style.width = key.width * factor + "px";
@@ -208,7 +209,6 @@ function createPianoRoll(elem) {
     let key = inf[mod];
     if (key.type == 2) {
       tuts.className = "tuts tuts-black";
-      let j = i;
       tuts.setAttribute("data-index", i);
       tuts.style.left = octave * 7 * factor + key.offset * factor + "px";
       tuts.style.width = key.width * factor + "px";
@@ -216,9 +216,7 @@ function createPianoRoll(elem) {
     }
   }
 }
-function tutsKey(index) {
-  let mod = index % 12;
-}
+
 let inf = [
   {
     type: 1,

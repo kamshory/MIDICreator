@@ -28,6 +28,12 @@ html {
     background: linear-gradient(180deg, $blue, $blue-dark);
 
     font-size: 10px;
+    margin: 0;
+    padding: 0;
+}
+body{
+    margin: 0;
+    padding: 0;
 }
 
 .recorder {
@@ -150,17 +156,17 @@ html {
 }
 
 .piano-roll{
-    width: 1540px;
+    width: 1136px;
     margin: 20px auto 0 auto;
     position: relative;
-    height: 100px;
+    height: 60px;
 }
 .tuts-white{
     background-color: #FFFFFF;
     border-right: 1px solid #DDDDDD;
     box-sizing: border-box;
     position: absolute;
-    height: 100px;
+    height: 60px;
 }
 .tuts-white.note-on{
     background-color: rgb(188, 253, 37);
@@ -170,7 +176,7 @@ html {
     border-right: 1px solid #DDDDDD;
     box-sizing: border-box;
     position: absolute;
-    height: 50px;
+    height: 30px;
 }
 .tuts-black.note-on{
     background-color: rgb(243, 150, 11);
