@@ -197,8 +197,8 @@ function createPianoRoll(elem) {
     if (key.type == 1) {
       tuts.className = "tuts tuts-white";
       tuts.setAttribute("data-index", i);
-      tuts.style.left = octave * 7 * factor + key.offset * factor + "px";
-      tuts.style.width = key.width * factor + "px";
+      tuts.style.left = (octave * 7 * factor + key.offset * factor) + "px";
+      tuts.style.width = (key.width * factor) + "px";
       elem.appendChild(tuts);
     }
   }
@@ -210,8 +210,8 @@ function createPianoRoll(elem) {
     if (key.type == 2) {
       tuts.className = "tuts tuts-black";
       tuts.setAttribute("data-index", i);
-      tuts.style.left = octave * 7 * factor + key.offset * factor + "px";
-      tuts.style.width = key.width * factor + "px";
+      tuts.style.left = (octave * 7 * factor + key.offset * factor) + "px";
+      tuts.style.width = (key.width * factor) + "px";
       elem.appendChild(tuts);
     }
   }
