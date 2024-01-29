@@ -1,16 +1,20 @@
 let audioPicker;
 let midiCreator;
-let tempo = 80;
-let maxTempo = 720;
-let resolution = 16;
-let channel = 3;
-let sampleRate = 32000;
+
 let init = false;
 let player;
 let playing = false;
 let lastMidiData;
 let timeout = null;
 let noteOff = 1000;
+
+let recordingConfig = {
+  tempo: 80,
+  maxTempo: 720,
+  resolution: 16,
+  channel: 3,
+  sampleRate: 32000
+}
 
 
 function initPlayer() {
@@ -68,17 +72,22 @@ function clearNote() {
     }
   }
 }
+let metronome;
+let minmax;
 
 window.onload = function () {
+  
+  metronome = new Metronome(130, 4, 4);
+  
+  
+  minmax = new InputRange(document.querySelector('.min-max-slider'), 12, 100);
+  
   let elem = document.querySelector(".piano-roll");
   audioPicker = new SoundPicker();
   audioPicker.onStartRecording = function (sampleRate) {
+    metronome.start();
     midiCreator = new MidiCreator({
-      tempo: tempo,
-      maxTempo: maxTempo,
-      resolution: resolution,
-      sampleRate: sampleRate,
-      channel: channel,
+      recordingConfig
     });
     midiCreator.onPreviewNote = function (data) {
       clearNote();

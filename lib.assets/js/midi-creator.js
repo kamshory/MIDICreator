@@ -116,6 +116,15 @@ class MidiCreator {
      * @param {Object} data MIDI event information
      */
     this.onPreviewNote = function (data) {};
+    
+    this.setMinNote = function(note)
+    {
+      this.pitchMin = this.pitchFromNote(note);
+    }
+    this.setMaxNote = function(note)
+    {
+      this.pitchMax = this.pitchFromNote(note);
+    }
 
     /**
      * Get note from pitch

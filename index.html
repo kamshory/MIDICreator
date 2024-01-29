@@ -13,6 +13,8 @@
     <script src="lib.assets/js/jzz/JZZ.synth.Tiny.js"></script>
     <script src="lib.assets/js/sound-picker.js"></script>
     <script src="lib.assets/js/midi-creator.js"></script>
+    <script src="lib.assets/js/input-range.js"></script>
+    <script src="lib.assets/js/metronome.js"></script>
     <script src="lib.assets/js/js.js"></script>
 
 </head>
@@ -33,6 +35,11 @@
                                 aria-hidden="true"></i></button>
                         <button class="js-midi button button--midi button--disabled"><i class="fa fa-music"
                                 aria-hidden="true"></i></button>
+
+                        <button class="js-midi button button--midi button"><i class="fa fa-cog"
+                                aria-hidden="true"></i></button>
+
+
                         <audio class="js-audio audio audio--hidden" controls />
                         <input type="file" id="localfile" aria-hidden="true">
                     </div>
@@ -44,8 +51,17 @@
                 </div>
             </div>
 
-            <div class="piano-roll">
+            <div class="piano-roll-container">
+                <div class="piano-roll">
 
+                </div>
+
+                <div class="min-max-slider">
+                    <div class="input-bar"></div>
+                    <input type="range" class="input-min" min="0" max="120" step="1">
+                    <input type="range" class="input-max" min="0" max="120" step="1">
+
+                </div>
             </div>
 
             <div class="player-wrapper">
@@ -55,6 +71,13 @@
 
         </div>
     </div>
+
+
+    <style>
+
+
+
+    </style>
 </body>
 
 </html>

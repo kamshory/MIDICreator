@@ -112,40 +112,85 @@ body {
   opacity: 1;
 }
 
-.piano-roll {
+.player-wrapper {
+  padding-top: 20px;
+  position: relative;
+  width: 270px;
+  margin: auto;
+}
+
+.piano-roll-container {
   width: 1136px;
   margin: 20px auto 0 auto;
   position: relative;
+}
+.piano-roll-container .piano-roll {
+  width: 100%;
+  position: relative;
   height: 60px;
 }
-
-.tuts-white {
+.piano-roll-container .tuts-white {
   background-color: #FFFFFF;
   border-right: 1px solid #DDDDDD;
   box-sizing: border-box;
   position: absolute;
   height: 60px;
 }
-
-.tuts-white.note-on {
+.piano-roll-container .tuts-white.note-on {
   background-color: rgb(188, 253, 37);
 }
-
-.tuts-black {
+.piano-roll-container .tuts-black {
   background-color: #111111;
   border-right: 1px solid #DDDDDD;
   box-sizing: border-box;
   position: absolute;
   height: 30px;
 }
-
-.tuts-black.note-on {
+.piano-roll-container .tuts-black.note-on {
   background-color: rgb(243, 150, 11);
 }
-
-.player-wrapper {
-  padding-top: 20px;
+.piano-roll-container .min-max-slider {
+  margin-top: 10px;
   position: relative;
-  width: 270px;
-  margin: auto;
+  width: 100%;
+  height: 35px;
+  text-align: center;
+}
+.piano-roll-container .min-max-slider .input-bar {
+  height: 10px;
+  width: 100%;
+  background-color: rgb(236, 236, 236);
+  display: block;
+}
+.piano-roll-container .min-max-slider input {
+  pointer-events: none;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  outline: none;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+.piano-roll-container .min-max-slider input::-webkit-slider-thumb,
+.piano-roll-container .min-max-slider input::-moz-range-thumb {
+  pointer-events: all;
+  z-index: 10;
+  outline: 0;
+  height: 24px;
+  width: 10px;
+  border-radius: 0px;
+}
+.piano-roll-container .min-max-slider input[type=range].input-min::-webkit-slider-thumb,
+.piano-roll-container .min-max-slider input[type=range].input-min::-moz-range-thumb {
+  background-color: rgb(18, 52, 68);
+}
+.piano-roll-container .min-max-slider input[type=range].input-max::-webkit-slider-thumb,
+.piano-roll-container .min-max-slider input[type=range].input-max::-moz-range-thumb {
+  background-color: rgb(97, 66, 66);
+}
+.piano-roll-container .min-max-slider input::-moz-range-track {
+  background: transparent;
 }/*# sourceMappingURL=css.css.map */
