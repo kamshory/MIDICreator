@@ -1,71 +1,114 @@
 class MidiCreator {
-  constructor(conf) {
-    conf = conf || {};
+  constructor(config) {
+    config = config || {};
 
     /**
      * Tempo or beat per minute
      */
-    this.tempo = conf.tempo || 130;
+    this.tempo = config.tempo || 130;
 
     /**
      * Pulses per quarter note
      */
-    this.ppqn = conf.ppqn || 96;
+    this.ppqn = config.ppqn || 96;
     /**
      * Maximum tempo (for realtime converting only)
      */
-    this.maxTempo = conf.maxTempo || 720;
+    this.maxTempo = config.maxTempo || 720;
 
     /**
      * Channel number to used
      */
-    this.channel = conf.channel || 0;
+    this.channel = config.channel || 0;
 
     /**
      * Minimum frequency to be process
      */
-    this.pitchMin = conf.pitchMin || 20;
+    this.pitchMin = config.pitchMin || 20;
 
     /**
      * Maximum frequency to be process
      */
-    this.pitchMax = conf.pitchMax || 20000;
+    this.pitchMax = config.pitchMax || 20000;
 
     /**
      * Threshold RMS
      */
-    this.thresholdRms = conf.thresholdRms || 0.01;
+    this.thresholdRms = config.thresholdRms || 0.01;
 
     /**
      * Threshold amplitude
      */
-    this.thresholdAmplitude = conf.thresholdAmplitude || 0.2;
+    this.thresholdAmplitude = config.thresholdAmplitude || 0.2;
 
     /**
      * Resolution
      */
-    this.resolution = conf.resolution || 32;
+    this.resolution = config.resolution || 32;
 
     /**
      * Sample rate
      */
-    this.sampleRate = conf.sampleRate || 32000;
+    this.sampleRate = config.sampleRate || 32000;
 
     /**
      * Minimum sampe fo analize frequancy and amplitude
      */
-    this.minSample = this.minSample || 500;
+    this.minSample = config.minSample || 500;
 
+    /**
+     * Bar duration
+     */
     this.barDuration = 60 / (this.tempo * this.ppqn);
+    
+    /**
+     * Time offset
+     */
     this.timeOffset = 0;
+    
+    /**
+     * MIDI data
+     */
     this.midiData = [];
+    
+    /**
+     * Last note
+     */
     this.lastNote = null;
+    
+    /**
+     * Last time
+     */
     this.lastTime = 0;
+    
+    /**
+     * Waveform array
+     */
     this.waveformArray = null;
+    
+    /**
+     * Flat note list
+     */
     this.noteFlats = "C Db D Eb E F Gb G Ab A Bb B".split(" ");
+    
+    /**
+     * Sharp note list
+     */
     this.noteSharps = "C C# D D# E F F# G G# A A# B".split(" ");
+    
+    /**
+     * Minimum interval
+     */
     this.minInterval = 60000 / (this.tempo * this.resolution);
+    
+    /**
+     * Sum pitch
+     */
     this.sumPitch = 0;
+    
+    /**
+     * Count pitch
+     */
     this.countPitch = 0;
 
     /**

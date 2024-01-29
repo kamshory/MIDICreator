@@ -12,7 +12,7 @@ let options = {};
 let mc = new MidiCreator(options);
 ```
 
-## Parameters
+## Constructor Parameters
 
 **type `object`**
 
