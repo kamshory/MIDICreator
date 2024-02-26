@@ -251,36 +251,41 @@ body {
             background: transparent
         }
     }
-    
+    .metronome-container{
+        padding-bottom: 20px;
+        
+    }
     .metronome
     {
         position: relative;
+        margin: auto;
         
         
         
         &.metronome-pie{
             width: 48px;
             height: 48px;
+            background-color: rgb(235, 235, 235);
             border-radius: 24px;
             &-4-4{
                 &[data-step="1"]{
                 
-                    background-image: conic-gradient(rgb(255, 115, 0) 0%, rgb(255, 115, 0) 25%, blue 25%, blue 100%);
+                    background-image: conic-gradient(rgb(255, 115, 0) 0%, rgb(255, 115, 0) 25%, rgb(235, 235, 235) 25%, rgb(235, 235, 235) 100%);
                     border-radius: 50%
                 }
                 &[data-step="2"]{
                     
-                    background-image: conic-gradient(blue 0%, blue 25%, rgb(255, 115, 0) 25%, rgb(255, 115, 0) 50%, blue 50%, blue 100%);
+                    background-image: conic-gradient(rgb(235, 235, 235) 0%, rgb(235, 235, 235) 25%, rgb(255, 115, 0) 25%, rgb(255, 115, 0) 50%, rgb(235, 235, 235) 50%, rgb(235, 235, 235) 100%);
                     border-radius: 50%
                 }
                 &[data-step="3"]{
                     
-                    background-image: conic-gradient(blue 0%, blue 50%, rgb(255, 115, 0) 50%, rgb(255, 115, 0) 75%, blue 75%, blue 100%);
+                    background-image: conic-gradient(rgb(235, 235, 235) 0%, rgb(235, 235, 235) 50%, rgb(255, 115, 0) 50%, rgb(255, 115, 0) 75%, rgb(235, 235, 235) 75%, rgb(235, 235, 235) 100%);
                     border-radius: 50%
                 }
                 &[data-step="0"]{
                     
-                    background-image: conic-gradient(blue 0%, blue 75%, rgb(255, 115, 0) 75%, rgb(255, 115, 0) 100%, blue 100%);
+                    background-image: conic-gradient(rgb(235, 235, 235) 0%, rgb(235, 235, 235) 75%, rgb(255, 115, 0) 75%, rgb(255, 115, 0) 100%, rgb(235, 235, 235) 100%);
                     border-radius: 50%
                 }
                 
