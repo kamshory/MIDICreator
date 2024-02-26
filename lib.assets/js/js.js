@@ -8,6 +8,9 @@ let lastMidiData;
 let timeout = null;
 let noteOff = 1000;
 
+let metronome;
+let minmax;
+
 let recordingConfig = {
   tempo: 80,
   maxTempo: 720,
@@ -72,8 +75,7 @@ function clearNote() {
     }
   }
 }
-let metronome;
-let minmax;
+
 
 window.onload = function () {
   
