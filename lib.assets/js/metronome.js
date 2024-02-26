@@ -1,4 +1,4 @@
-function Metronome(bpm, beats, beatType)
+function Metronome(selector, bpm, beats, beatType)
 {
     this.bpm = bpm;
     this.interval = null;
@@ -6,6 +6,7 @@ function Metronome(bpm, beats, beatType)
     this.beatType = beatType;
     this.count = 0;
     this.isOn = false;
+    this.selector = selector;
     
     this.audioContext = new AudioContext();
 
@@ -27,6 +28,19 @@ function Metronome(bpm, beats, beatType)
     
     this.init = function()
     {
+        this.selector.innerHTML = "";
+        for(let i = 1; i<=this.beats; i++)
+        {
+            let j = i;
+            if(j == this.beats)
+            {
+                j = 0;
+            }
+            let span = document.createElement('span');
+            span.setAttribute('data-index', j);
+            span.innerText = i;
+            this.selector.appendChild(span);
+        }
     }
     
     /**

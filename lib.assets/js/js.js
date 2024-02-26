@@ -77,7 +77,7 @@ let minmax;
 
 window.onload = function () {
   
-  metronome = new Metronome(130, 4, 4);
+  metronome = new Metronome(document.querySelector('.metronome'), 130, 4, 4);
   
   
   minmax = new InputRange(document.querySelector('.min-max-slider'), 12, 100);

@@ -193,4 +193,7 @@ body {
 }
 .piano-roll-container .min-max-slider input::-moz-range-track {
   background: transparent;
+}
+.piano-roll-container .metronome .span {
+  text-align: center;
 }/*# sourceMappingURL=css.css.map */
