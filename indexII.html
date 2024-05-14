@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIDI Creator</title>
+<link rel="stylesheet" href="lib.assets/css/css.css">
+<link rel="stylesheet" href="lib.assets/css/fontawesome-free-6.4.2/css/all.min.css">
+<script src="lib.assets/js/jzz/JZZ.js"></script>
+<script src="lib.assets/js/jzz/JZZ.midi.SMF.js"></script>
+<script src="lib.assets/js/jzz/JZZ.gui.Player.js"></script>
+<script src="lib.assets/js/jzz/JZZ.synth.Tiny.js"></script>
+<script src="lib.assets/js/sound-picker.js"></script>
+<script src="lib.assets/js/midi-creator.js"></script>
+<script src="lib.assets/js/js.js"></script>
+</head>
+<body>
+<div class="all">
+<div class="container">
+<div class="sound-recorder">
+<div class="js-message message"></div>
+<div class="recorder">
+<div class="toolbar">
+<button class="js-file button button--open"><i class="fa fa-folder" aria-hidden="true"></i></button>
+<button class="js-record button button--record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+<button class="js-play button button--play button--disabled"><i class="fa fa-play" aria-hidden="true"></i></button>
+<button class="js-midi button button--midi button--disabled"><i class="fa fa-music" aria-hidden="true"></i></button>
+<audio class="js-audio audio audio--hidden" controls />
+<input type="file" id="localfile" aria-hidden="true">
+</div>
+<div class="waveform">
+<canvas class="js-canvas waveform__canvas"></canvas>
+</div>
+</div>
+</div>
+<div class="piano-roll">
+</div>
+<div class="player-wrapper">
+<div id="player"></div>
+</div>
+</div>
+</div>
+</body>
+</html>
